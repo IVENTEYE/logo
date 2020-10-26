@@ -22,10 +22,6 @@ sideMenu.addEventListener('click', () => {
     $('.main__menu-body').slideToggle();
 });
 
-
-
-
-
 function ibg() {
     let ibg = document.querySelectorAll(".ibg");
     for (let i = 0; i < ibg.length; i++) {
@@ -96,8 +92,7 @@ const inputLeft = document.querySelector('.input-left'),
       thumbNumLeft = document.querySelector('.thumb-left span'),
       thumbNumRight = document.querySelector('.thumb-right span'),
       valuesFilterPriceInput = document.querySelectorAll('.values-filter-price__input input'),
-      inputs = document.querySelectorAll('.input-range'),
-      headerFilterSpoil = document.querySelectorAll('.header-filter__spoil');
+      inputs = document.querySelectorAll('.input-range');
 
 const setLeftValue = () => {
     let inputThumb = inputLeft;
@@ -167,48 +162,11 @@ inputs.forEach( item => {
     });
 });
 
-headerFilterSpoil.forEach( item => {
-    item.addEventListener('click', () => {
-        if (item.classList.contains('active')) {
-            item.classList.remove('active');
-            
-        } else {
-            item.classList.add('active');
+document.querySelectorAll('.filter-section__spoil').forEach(item => {
+    item.addEventListener('click', (e) => {
+        if (e.target.closest('.header-filter')) {
+            item.classList.toggle('active');   
         }
     });
+
 });
-
-if (isMobile.any()) {
-	const sideBars = document.querySelectorAll('.body-menu-link-arrow');
-	for (let i = 0; i < sideBars.length; i++) {
-		const sideBar = sideBars[i];
-		sideBar.addEventListener('click', (e) => {
-			sideBar.classList.toggle('active');
-			e.preventDefault();
-		});
-	}
-} else {
-	const sideList = (e) => {
-		const sideBarData = sideBars.forEach( item => {
-			item.getAttribute('data-product');
-		});
-
-		const sideBarItemsData = sideBarItems.forEach( item => {
-			item.getAttribute('data-product');
-		});
-	 
-	 if (sideBarData === sideBarItemsData) {
-		 for (let i = 0; i < sideBars.length; i++) {
-			let sideBar = sideBars[i];
-			sideBar.addEventListener('mouseenter', () => {
-				sideBar.classList.add('active');
-			});
-			sideBar.addEventListener('mouseleave', () => {
-				sideBar.classList.remove('active');
-			});
-		 }	
-	 }
-};
-
-sideList();
-}

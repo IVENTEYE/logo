@@ -1,3 +1,5 @@
+// const { default: Swiper } = require("swiper");
+
 (function () {
 	let originalPositions = [];
 	let daElements = document.querySelectorAll('[data-da]');
@@ -128,7 +130,7 @@
 	}
 }());
 
-let isMobile = {Android: function() {return navigator.userAgent.match(/Android/i);},BlackBerry: function() {return navigator.userAgent.match(/BlackBerry/i);},iOS: function() {return navigator.userAgent.match(/iPhone|iPad|iPod/i);},Opera: function() {return navigator.userAgent.match(/Opera Mini/i);},Windows: function() {return navigator.userAgent.match(/IEMobile/i);},any: function() {return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());}};
+let isMobile = { Android: function () { return navigator.userAgent.match(/Android/i); }, BlackBerry: function () { return navigator.userAgent.match(/BlackBerry/i); }, iOS: function () { return navigator.userAgent.match(/iPhone|iPad|iPod/i); }, Opera: function () { return navigator.userAgent.match(/Opera Mini/i); }, Windows: function () { return navigator.userAgent.match(/IEMobile/i); }, any: function () { return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows()); } };
 
 const menu = document.querySelector('.top-header__icon'),
 	sideMenu = document.querySelector('.main__menu-header-icon'),
@@ -138,8 +140,18 @@ const menu = document.querySelector('.top-header__icon'),
 	menuBody = document.querySelector('.menu__body'),
 	searchSelect = document.querySelector('.search-button'),
 	searchSelectBody = document.querySelector('.categories-search')
-	categoriesSearchCheckbox = document.querySelectorAll('.categories-search__checkbox'),
+    categoriesSearchCheckbox = document.querySelectorAll('.categories-search__checkbox'),
 	sliders = document.querySelectorAll('.swiper-container');
+
+const inputLeft = document.querySelector('.input-left'),
+	inputRight = document.querySelector('.input-right'),
+	thumbLeft = document.querySelector('.slider > .thumb-left'),
+	thumbRight = document.querySelector('.slider > .thumb-right'),
+	range = document.querySelector('.slider > .range'),
+	thumbNumLeft = document.querySelector('.thumb-left span'),
+	thumbNumRight = document.querySelector('.thumb-right span'),
+	valuesFilterPriceInput = document.querySelectorAll('.values-filter-price__input input'),
+	inputs = document.querySelectorAll('.input-range');
 
 const toggleBurger = (button, side) => {
 	button.addEventListener('click', () => {
@@ -196,7 +208,7 @@ let mySwiper = new Swiper('.slider-main', {
 	},
 });
 
-let swiper= new Swiper('.products-slider__item', {
+let swiper = new Swiper('.products-slider__item', {
 	slidesPerView: 1,
 	autoHeight: true,
 	navigation: {
@@ -209,7 +221,7 @@ let swiper= new Swiper('.products-slider__item', {
 	},
 });
 
-let swiperBrands= new Swiper('.brands-slider__container', {
+let swiperBrands = new Swiper('.brands-slider__container', {
 	slidesPerView: 5,
 	autoHeight: false,
 	loop: true,
@@ -236,10 +248,55 @@ let swiperBrands= new Swiper('.brands-slider__container', {
 	},
 });
 
+if (document.querySelector('.images-product')) {
+	let swiperSubProduct = new Swiper('.images-product__subslider', {
+		slidesPerView: 4,
+		breakpoints: {
+			320: {
+				slidesPerView: 3,
+			},
+			425: {
+				slidesPerView: 5,
+			},
+			700: {
+				slidesPerView: 3,
+			},
+			992: {
+				slidesPerView: 4,
+			}
+		}
+	});
 
+	let swiperProduct = new Swiper('.mainslider-product', {
+		slidesPerView: 1,
+		observer: true,
+		oserveParents: true,
+		thumbs: {
+			swiper: swiperSubProduct
+		}
+	});
+}
 
 const sliderMainImages = document.querySelectorAll('.slider-main__image'),
-	  sliderMainDots = document.querySelectorAll('.slider-main__dots .swiper-pagination-bullet');
+	sliderMainDots = document.querySelectorAll('.slider-main__dots .swiper-pagination-bullet');
+
+function testWebP(callback) {
+
+	var webP = new Image();
+	webP.onload = webP.onerror = function () {
+		callback(webP.height == 2);
+	};
+	webP.src = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
+}
+
+testWebP(function (support) {
+
+	if (support == true) {
+		document.querySelector('body').classList.add('webp');
+	} else {
+		document.querySelector('body').classList.add('no-webp');
+	}
+});
 
 if (isMobile.any()) {
 	const sideBars = document.querySelectorAll('.body-menu-link-arrow');
@@ -252,28 +309,28 @@ if (isMobile.any()) {
 	}
 } else {
 	const sideList = (e) => {
-		const sideBarData = sideBars.forEach( item => {
+		const sideBarData = sideBars.forEach(item => {
 			item.getAttribute('data-product');
 		});
 
-		const sideBarItemsData = sideBarItems.forEach( item => {
+		const sideBarItemsData = sideBarItems.forEach(item => {
 			item.getAttribute('data-product');
 		});
-	 
-	 if (sideBarData === sideBarItemsData) {
-		 for (let i = 0; i < sideBars.length; i++) {
-			let sideBar = sideBars[i];
-			sideBar.addEventListener('mouseenter', () => {
-				sideBar.classList.add('active');
-			});
-			sideBar.addEventListener('mouseleave', () => {
-				sideBar.classList.remove('active');
-			});
-		 }	
-	 }
-};
 
-sideList();
+		if (sideBarData === sideBarItemsData) {
+			for (let i = 0; i < sideBars.length; i++) {
+				let sideBar = sideBars[i];
+				sideBar.addEventListener('mouseenter', () => {
+					sideBar.classList.add('active');
+				});
+				sideBar.addEventListener('mouseleave', () => {
+					sideBar.classList.remove('active');
+				});
+			}
+		}
+	};
+
+	sideList();
 }
 
 
@@ -288,9 +345,139 @@ sideList();
 // 		});	
 // 	});
 // });
-	  
-	for (let i = 0; i < sliderMainImages.length; i++) {
-		const sliderImage = sliderMainImages[i].querySelector('img').getAttribute('src');
-		sliderMainDots[i].style.backgroundImage = "url('" + sliderImage + "')";
 
+if (document.querySelector('.filter')) {
+	const setLeftValue = () => {
+		let inputThumb = inputLeft;
+		let min = parseInt(inputThumb.min),
+			max = parseInt(inputThumb.max);
+	
+		inputThumb.value = Math.min(parseInt(inputThumb.value), parseInt(inputRight.value) - 1);
+	
+		let percent = ((inputThumb.value - min) / (max - min)) * 100;
+	
+		thumbLeft.style.left = percent + '%';
+		range.style.left = percent + '%';
+	
+		for (let i = 0; i < valuesFilterPriceInput.length; i++) {
+			valuesFilterPriceInput[0].addEventListener('input', () => {
+				
+				let percent = ((valuesFilterPriceInput[0].value - min) / (max - valuesFilterPriceInput[0].value)) * 100;
+	
+				thumbLeft.style.left = percent + '%';
+				range.style.left = percent + '%';
+				thumbNumLeft.innerHTML = valuesFilterPriceInput[0].value;
+				if (valuesFilterPriceInput[0].value === '') {
+					thumbNumLeft.innerHTML = 0;
+				}
+			});
+		}
+	};
+	
+	setLeftValue();
+	
+	const setRightValue = () => {
+		let inputThumb = inputRight;
+		let min = parseInt(inputThumb.min),
+			max = parseInt(inputThumb.max);
+	
+		inputThumb.value = Math.max(parseInt(inputThumb.value), parseInt(inputLeft.value) + 1);
+	
+		let percent = ((inputThumb.value - min) / (max - min)) * 100;
+	
+		thumbRight.style.right = (100 - percent) + '%';
+		range.style.right = (100 - percent) + '%';
+	
+		for (let i = 0; i < valuesFilterPriceInput.length; i++) {
+			valuesFilterPriceInput[1].addEventListener('input', () => {
+				
+				let percent = ((inputThumb.value - -valuesFilterPriceInput[1].value) / (max - valuesFilterPriceInput[1].value)) * 100;
+	
+				thumbRight.style.right = (100 - percent) + '%';
+				range.style.right = (100 - percent) + '%';
+				thumbNumRight.innerHTML = valuesFilterPriceInput[1].value;
+				// if (valuesFilterPriceInput[0].value === '') {
+				//     thumbNumLeft.innerHTML = 0;
+				// }
+			});
+		}
+	};
+	
+	setRightValue();
+	
+	inputLeft.addEventListener('input', setLeftValue);
+	inputRight.addEventListener('input', setRightValue);
+	
+	inputs.forEach( item => {
+		item.addEventListener('input', () => {
+			thumbNumLeft.innerHTML = inputLeft.value;
+			thumbNumRight.innerHTML = inputRight.value;
+		});
+	});
+	
+	if (document.querySelector('.filter-section__spoil')) {
+		document.querySelectorAll('.filter-section__spoil').forEach(item => {
+			item.addEventListener('click', (e) => {
+				if (e.target.closest('.header-filter')) {
+					item.classList.toggle('active');   
+				}
+			});
+		
+		});
 	}
+	
+	if (isMobile.any()) {
+		const filterTitle = document.querySelector('.filter__title');
+		filterTitle.addEventListener('click', () => {
+			filterTitle.classList.toggle('active');
+			$(filterTitle.nextElementSibling).slideToggle();
+		});
+	}
+}
+
+if (document.querySelector('.quantity')) {
+	const inputProductField = document.querySelector('.quantity__field'),
+		  inputProductPrev = document.querySelector('.quantity__btn-prev'),
+		  inputProductNext = document.querySelector('.quantity__btn-next');
+	let prodectValue = 0;
+	const inputMinus = () => {
+		if (inputProductField.value === '0' || inputProductField.value === '') {
+			inputProductField.value = '';
+		} else {
+			inputProductField.value = prodectValue = prodectValue - 1;
+		}
+	};
+	const inputPlus = () => {
+		inputProductField.value = prodectValue = prodectValue + 1;
+	};
+	const inputChange = (e) => {
+		e.target.value = "Выбрать";
+	};
+	inputProductField.addEventListener('input', inputChange)
+	inputProductPrev.addEventListener('click', inputMinus);
+	inputProductNext.addEventListener('click', inputPlus);
+}
+
+if (document.querySelector('.tabs')) {
+  const	tabsProduct = document.querySelectorAll('.tabcontent-product__block'),
+		tabsNav = document.querySelectorAll('.tabnav-product__item');
+		
+		tabsNav.forEach(item => {
+			item.addEventListener('click', function (e) {
+				e.preventDefault();
+				const id = e.target.getAttribute('data-href');
+	
+				tabsNav.forEach(child => child.classList.remove('active'));
+				tabsProduct.forEach(child => child.classList.remove('active'));
+	
+				item.classList.add('active');
+				document.getElementById(id).classList.add('active');
+			});
+		});
+}
+
+for (let i = 0; i < sliderMainImages.length; i++) {
+	const sliderImage = sliderMainImages[i].querySelector('img').getAttribute('src');
+	sliderMainDots[i].style.backgroundImage = "url('" + sliderImage + "')";
+
+}
